@@ -1,0 +1,13 @@
+<div class="weather-container">
+  <app-city-search (searchCity)="onCitySearch($event)"></app-city-search>
+
+  <div class="city-cards">
+    @for (city of cities; track city.name) {
+      <app-city-card [cityName]="city.name"
+                     [temperature]="city.temperature"
+                     [condition]="city.condition"
+                     (removeCity)="onCityRemove(city.name)">
+      </app-city-card>
+    }
+  </div>
+</div>
