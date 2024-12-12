@@ -7,8 +7,9 @@
            [formControl]="cityName"/>
   </mat-form-field>
   <button mat-stroked-button
-          (click)="onSearch()"
+          color="primary"
+          (click)="onAdd()"
           [disabled]="cityName.invalid">
-    Search
+    Add
   </button>
 </div>

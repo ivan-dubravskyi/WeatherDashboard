@@ -1,13 +1,19 @@
 <mat-card class="city-card">
   <mat-card-header>
-    <mat-card-title>{{ cityName }}</mat-card-title>
+    <mat-card-title>{{ cityWeather.name }}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <p class="temperature">{{ temperature }}°C</p>
-    <p class="condition">{{ condition }}</p>
+    <p class="temperature">
+      {{ cityWeather.temperature }}°C
+    </p>
+    <p class="condition">
+      {{ cityWeather.condition }}
+    </p>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-icon-button (click)="onRemove()" aria-label="Remove city">
+    <button mat-icon-button
+            aria-label="Remove city"
+            (click)="onRemove()">
       <mat-icon>delete</mat-icon>
     </button>
   </mat-card-actions>

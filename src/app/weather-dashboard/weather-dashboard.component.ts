@@ -1,33 +1,42 @@
-import { Component } from '@angular/core';
-import { WeatherApiService } from "../core/services/weather-api.service";
+import { Component, OnInit } from '@angular/core';
 import { CitySearchComponent } from "./components/city-search/city-search.component";
-import {CityCardComponent} from "./components/city-card/city-card.component";
+import { CityCardComponent } from "./components/city-card/city-card.component";
+import { WeatherService } from "../core/services/weather.service";
+import { CityWeather } from "../core/models";
+import {LoaderComponent} from "../core/components/loader/loader.component";
+import {Observable} from "rxjs";
+import {AsyncPipe, CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-weather-dashboard',
   standalone: true,
-  imports: [CitySearchComponent, CityCardComponent],
+  imports: [
+    CommonModule,
+    CitySearchComponent,
+    CityCardComponent,
+    LoaderComponent,
+    AsyncPipe
+  ],
   templateUrl: './weather-dashboard.component.html',
   styleUrl: './weather-dashboard.component.scss'
 })
-export class WeatherDashboardComponent {
+export class WeatherDashboardComponent implements OnInit {
+  cities: CityWeather[] = [];
+  public showLoader$: Observable<boolean> | undefined;
 
-  cities: { name: string; temperature: number; condition: string }[] = [];
+  constructor(private weatherService: WeatherService) {}
 
-  constructor(private weatherApi: WeatherApiService) {}
-
-  onCitySearch(cityName: string): void {
-    this.weatherApi.getWeather(cityName).subscribe((res) => {
-      const city = {
-        name: res.name,
-        temperature: Math.round(res.main.temp),
-        condition: res.weather[0].main,
-      };
-      this.cities.push(city);
+  ngOnInit(): void {
+    this.weatherService.cities$.subscribe((cities) => {
+      this.cities = cities;
     });
+    this.showLoader$ = this.weatherService.showLoader$;
+  }
+  onAddCity(cityName: string): void {
+    this.weatherService.addCity(cityName);
   }
 
   onCityRemove(cityName: string): void {
-    this.cities = this.cities.filter((city) => city.name !== cityName);
+    this.weatherService.removeCity(cityName);
   }
 }

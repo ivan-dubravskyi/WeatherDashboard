@@ -19,14 +19,13 @@ import { FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
 export class CitySearchComponent {
   cityName = new FormControl('', Validators.required)
 
-  @Output() searchCity = new EventEmitter<string>();
+  @Output() addCity = new EventEmitter<string>();
 
-  onSearch() {
-    const city = this.cityName.value;
-    if (city) {
-      this.searchCity.emit(city);
+  onAdd() {
+    const name = this.cityName.value;
+    if (name) {
+      this.addCity.emit(name);
       this.cityName.reset();
     }
   }
-
 }
