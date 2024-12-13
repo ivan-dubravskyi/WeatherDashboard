@@ -35,6 +35,13 @@ export class ForecastService {
     })
   }
 
+
+
+// These two methods, `extractTodayForecast` and `extractDailyForecast`, were written
+// to mock the data format needed for the application. The free version of OpenWeatherMap
+// API does not provide the specific data format required, so these methods process and
+// restructure the available forecast data to fit the application's needs.
+
   extractTodayForecast(forecast: ForecastResponse): TodayForecast[] {
     const today = new Date();
     const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
@@ -91,10 +98,8 @@ export class ForecastService {
 
       const dayData = groupedByDay.get(date)!;
 
-      // Track temperatures
       dayData.temperatures.push(weather.main.temp);
 
-      // Track icons and their frequency
       const icon = weather.weather[0].icon;
       dayData.icons[icon] = (dayData.icons[icon] || 0) + 1;
     });
