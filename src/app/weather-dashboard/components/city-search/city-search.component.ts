@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatInputModule } from "@angular/material/input";
+import { MatInputModule} from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
-import { FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 
 @Component({
   selector: 'app-city-search',
@@ -11,6 +11,7 @@ import { FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    FormsModule,
     ReactiveFormsModule
   ],
   templateUrl: './city-search.component.html',

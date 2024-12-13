@@ -7,8 +7,16 @@
       {{ cityWeather.temperature }}°C
     </p>
     <p class="condition">
+      <img [ngSrc]="getWeatherIcon(cityWeather.icon)"
+           [height]="50"
+           [width]="50"
+           priority
+           alt="Weather Icon">
       {{ cityWeather.condition }}
     </p>
+
+    <ng-content></ng-content>
+
   </mat-card-content>
   <mat-card-actions>
     <button mat-icon-button

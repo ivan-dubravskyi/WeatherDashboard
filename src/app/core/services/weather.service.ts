@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { WeatherApiService } from './weather-api.service';
-import { CityWeather } from "../models";
+import { CityWeather, WeatherResponse } from "../models";
 import { SnackBarService } from "./snack-bar.service";
 
 @Injectable({
   providedIn: 'root',
 })
 export class WeatherService {
-  private readonly LOCAL_STORAGE_KEY = 'weather-cities';
+  private readonly LC_KEY_WEATHER_CITIES = 'weather-cities';
 
   private citiesSubject = new BehaviorSubject<CityWeather[]>([]);
   public cities$: Observable<CityWeather[]> = this.citiesSubject.asObservable();
@@ -19,24 +19,21 @@ export class WeatherService {
   constructor(
     private weatherApi: WeatherApiService,
     private snackBar: SnackBarService,
-  ) {
-    const storedCities = this.loadCitiesFromLocalStorage();
-    this.citiesSubject = new BehaviorSubject<CityWeather[]>(storedCities);
-    this.cities$ = this.citiesSubject.asObservable();
-  }
+  ) { }
 
   addCity(cityName: string): void {
-
     const currentCities = this.citiesSubject.value;
-    if (!currentCities.some((city) => city.name.toLowerCase() === cityName.toLowerCase())) {
-      this.loader.next(true);
-      this.weatherApi.getWeather(cityName).subscribe({
-        next: (weather) => {
-          const newCity: CityWeather = {
-            name: weather.name,
-            temperature: Math.round(weather.main.temp),
-            condition: weather.weather[0].main,
-          };
+
+    if (currentCities.some((city) => city.name.toLowerCase() === cityName.trim().toLowerCase())) {
+      this.snackBar.showMessage(`City ${cityName} is already in the list!`);
+      return;
+    }
+
+    this.loader.next(true);
+
+    this.getWeather(cityName)
+      .subscribe({
+        next: (newCity) => {
           const updatedCities = [...currentCities, newCity];
           this.citiesSubject.next(updatedCities);
           this.saveCitiesToLocalStorage(updatedCities);
@@ -50,10 +47,16 @@ export class WeatherService {
           );
           this.loader.next(false);
         },
-      });
-    } else {
-      this.snackBar.showMessage(`City ${cityName} is already in the list!`);
+      })
+  }
+
+  initWeathers() {
+    const storedCitiesNames = this.loadCitiesFromLocalStorage();
+
+    if (!storedCitiesNames.length) {
+      return;
     }
+    this.getWeatherForCities(storedCitiesNames)
   }
 
   removeCity(cityName: string): void {
@@ -65,12 +68,51 @@ export class WeatherService {
     this.snackBar.showMessage(`City ${cityName} successfully removed!`);
   }
 
-  private loadCitiesFromLocalStorage(): CityWeather[] {
-    const storedCities = localStorage.getItem(this.LOCAL_STORAGE_KEY);
+  private getWeatherForCities(cities: string[]) {
+    const requests  = cities.map(city => this.getWeather(city))
+
+    this.loader.next(true);
+    return combineLatest(requests).subscribe(
+      {
+        next: (cities: CityWeather[]) => {
+          this.citiesSubject.next(cities);
+          this.loader.next(false);
+        },
+        error: () => {
+          this.snackBar.showMessage(
+            `Failed to fetch weather data`,
+            'Dismiss'
+          );
+          this.loader.next(false);
+        }
+      }
+    )
+  }
+
+  private getWeather(cityName: string): Observable<CityWeather> {
+    return this.weatherApi.getWeather(cityName).pipe(
+      map(weather => this.convertToCityWeather(weather)),
+    )
+  }
+
+  private convertToCityWeather(weather: WeatherResponse): CityWeather {
+    return {
+      name: weather.name,
+      temperature: Math.round(weather.main.temp),
+      condition: weather.weather[0].main,
+      icon: weather.weather[0].icon,
+    };
+  }
+
+  private loadCitiesFromLocalStorage(): string[] {
+    const storedCities = localStorage.getItem(this.LC_KEY_WEATHER_CITIES);
     return storedCities ? JSON.parse(storedCities) : [];
   }
 
   private saveCitiesToLocalStorage(cities: CityWeather[]): void {
-    localStorage.setItem(this.LOCAL_STORAGE_KEY, JSON.stringify(cities));
+    localStorage.setItem(
+      this.LC_KEY_WEATHER_CITIES,
+      JSON.stringify(cities.map(city => city.name))
+    );
   }
 }

@@ -3,6 +3,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CityWeather } from "../../../core/models";
+import { NgOptimizedImage } from "@angular/common";
+import { getWeatherIcon } from "../../../core/utils/weather-icons.helper";
 
 @Component({
   selector: 'app-city-card',
@@ -11,6 +13,7 @@ import { CityWeather } from "../../../core/models";
     MatCardModule,
     MatIconModule,
     MatButtonModule,
+    NgOptimizedImage,
   ],
   templateUrl: './city-card.component.html',
   styleUrls: ['./city-card.component.scss'],
@@ -22,4 +25,6 @@ export class CityCardComponent {
   onRemove(): void {
     this.removeCity.emit();
   }
+
+  getWeatherIcon = getWeatherIcon;
 }

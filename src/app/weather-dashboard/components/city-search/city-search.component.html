@@ -1,4 +1,5 @@
-<div class="search-container">
+<form class="search-container"
+     (ngSubmit)="onAdd()">
   <mat-form-field appearance="outline"
                   class="full-width">
     <mat-label>City</mat-label>
@@ -8,8 +9,8 @@
   </mat-form-field>
   <button mat-stroked-button
           color="primary"
-          (click)="onAdd()"
+          type="submit"
           [disabled]="cityName.invalid">
     Add
   </button>
-</div>
+</form>
