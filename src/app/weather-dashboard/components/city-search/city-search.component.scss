@@ -1,0 +1,14 @@
+.search-container {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+
+  .full-width {
+    flex: 1;
+  }
+
+  button {
+    min-width: 100px;
+    height: 56px;
+  }
+}

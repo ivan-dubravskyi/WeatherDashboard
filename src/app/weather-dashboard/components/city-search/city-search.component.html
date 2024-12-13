@@ -1,0 +1,16 @@
+<form class="search-container"
+     (ngSubmit)="onAdd()">
+  <mat-form-field appearance="outline"
+                  class="full-width">
+    <mat-label>City</mat-label>
+    <input matInput
+           placeholder="Enter City"
+           [formControl]="cityName"/>
+  </mat-form-field>
+  <button mat-stroked-button
+          color="primary"
+          type="submit"
+          [disabled]="cityName.invalid">
+    Add
+  </button>
+</form>

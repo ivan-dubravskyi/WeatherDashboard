@@ -1,0 +1,27 @@
+<div class="daily-forecast">
+  @for (dailyForecast of forecast; track dailyForecast.date) {
+    <div class="container">
+      <b>{{ dailyForecast.date | date: 'EEEEEE' }}</b>
+
+      <p>
+        {{ dailyForecast.minTemperature }}°C
+        <mat-slider [min]="globalMin"
+                    [max]="globalMax">
+          <input [value]="dailyForecast.minTemperature"
+                 disabled
+                 matSliderStartThumb>
+          <input [value]="dailyForecast.maxTemperature"
+                 disabled
+                 matSliderEndThumb>
+        </mat-slider>
+        {{ dailyForecast.maxTemperature }}°C
+      </p>
+
+      <img [ngSrc]="getWeatherIcon(dailyForecast.averageIcon)"
+           [height]="40"
+           [width]="40"
+           priority
+           alt="Weather Icon">
+    </div>
+  }
+</div>

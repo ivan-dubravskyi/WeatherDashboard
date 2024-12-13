@@ -1,0 +1,15 @@
+<div class="today-forecast">
+  @for (forecast of todayForecast; track forecast.time) {
+    <div>
+      <b>{{ forecast.time | date: 'HH' }}</b>
+      <p class="temperature">
+        {{ forecast.temperature }}°C
+      </p>
+      <img [ngSrc]="getWeatherIcon(forecast.icon)"
+           [height]="35"
+           [width]="35"
+           priority
+           alt="Weather Icon">
+    </div>
+  }
+</div>

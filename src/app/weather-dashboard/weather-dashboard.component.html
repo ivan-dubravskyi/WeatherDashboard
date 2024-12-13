@@ -1,0 +1,35 @@
+<div class="weather-container">
+  <app-city-search (addCity)="onAddCity($event)"></app-city-search>
+
+  <div class="city-cards">
+    @for (city of cities$ | async; track city.name) {
+      <app-city-card [cityWeather]="city"
+                     [class.active]="selectedCity === city"
+                     (removeCity)="onCityRemove(city.name)"
+                     (click)="toggleCard(city)">
+
+        @if (selectedCity === city) {
+          @if (showForecastLoader$ | async) {
+            <div class="forecast-loader">
+              <mat-spinner diameter="40" strokeWidth="5"></mat-spinner>
+            </div>
+          } @else {
+            <app-today-forecast [todayForecast]="todayForecast$ | async">
+            </app-today-forecast>
+            <app-daily-forecast [dailyForecast]="dailyForecast$ | async">
+            </app-daily-forecast>
+          }
+        }
+      </app-city-card>
+    } @empty {
+      <div class="empty-state">
+        <p>No cities added yet. Start by searching for a city!</p>
+      </div>
+    }
+  </div>
+
+  @if (showLoader$ | async) {
+    <app-loader></app-loader>
+  }
+
+</div>
