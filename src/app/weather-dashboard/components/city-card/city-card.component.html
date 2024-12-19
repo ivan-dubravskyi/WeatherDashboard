@@ -1,4 +1,5 @@
-<mat-card class="city-card">
+<mat-card class="city-card"
+          [ngClass]="getCardBackground(cityWeather.icon)">
   <mat-card-header>
     <mat-card-title>{{ cityWeather.name }}</mat-card-title>
   </mat-card-header>
