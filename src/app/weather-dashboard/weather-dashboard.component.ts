@@ -4,11 +4,14 @@ import { CityCardComponent } from "./components/city-card/city-card.component";
 import { WeatherService } from "../core/services/weather.service";
 import { LoaderComponent } from "../core/components/loader/loader.component";
 import { AsyncPipe} from "@angular/common";
-import { CityWeather } from "../core/models";
+import {AppStateInterface, CityWeather} from "../core/models";
 import { TodayForecastComponent } from "./components/today-forecast/today-forecast.component";
 import { ForecastService } from "../core/services/forecast.service";
 import { DailyForecastComponent } from "./components/daіly-forecast/daily-forecast.component";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import {select, Store} from "@ngrx/store";
+import * as WeatherActions from './store/weather.actions';
+import {citiesSelector, isLoadingSelector} from "./store/weather.selecrots";
 
 @Component({
   selector: 'app-weather-dashboard',
@@ -27,8 +30,11 @@ import { MatProgressSpinner } from "@angular/material/progress-spinner";
 })
 export class WeatherDashboardComponent implements OnInit {
 
-  cities$ = this.weatherService.cities$;
-  showLoader$= this.weatherService.showLoader$;
+  // cities$ = this.weatherService.cities$;
+
+  // showLoader$= this.weatherService.showLoader$;
+  cities$ = this.store.pipe(select(citiesSelector));
+  showLoader$= this.store.pipe(select(isLoadingSelector));
 
   selectedCity: CityWeather | null = null;
   todayForecast$ = this.forecastService.todayForecast$;
@@ -36,10 +42,12 @@ export class WeatherDashboardComponent implements OnInit {
   showForecastLoader$= this.forecastService.showForecastLoader$;
 
   constructor(private weatherService: WeatherService,
-              public forecastService: ForecastService) {}
+              public forecastService: ForecastService,
+              private store: Store<AppStateInterface>) {}
 
   ngOnInit() {
-    this.weatherService.initWeathers();
+    // this.weatherService.initWeathers();
+    this.store.dispatch(WeatherActions.getCitiesWeather())
   }
 
   onAddCity(cityName: string): void {

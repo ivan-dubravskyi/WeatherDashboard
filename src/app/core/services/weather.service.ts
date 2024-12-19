@@ -89,7 +89,7 @@ export class WeatherService {
     )
   }
 
-  private getWeather(cityName: string): Observable<CityWeather> {
+  public getWeather(cityName: string): Observable<CityWeather> {
     return this.weatherApi.getWeather(cityName).pipe(
       map(weather => this.convertToCityWeather(weather)),
     )
@@ -104,7 +104,7 @@ export class WeatherService {
     };
   }
 
-  private loadCitiesFromLocalStorage(): string[] {
+  public loadCitiesFromLocalStorage(): string[] {
     const storedCities = localStorage.getItem(this.LC_KEY_WEATHER_CITIES);
     return storedCities ? JSON.parse(storedCities) : [];
   }
